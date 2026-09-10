@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oge-hse-mcp"
+version = "0.1.0"
+description = "Demonstration MCP server for fictitious HSE safety and procedural knowledge"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.10.0,<2",
+    "pyjwt[crypto]>=2.9.0",
+    "python-dotenv>=1.0.1",
+    "sqlalchemy>=2.0.36",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]
+
+[project.scripts]
+oge-hse-mcp = "oge_hse_mcp.server:main"
+oge-hse-mcp-connector = "oge_hse_mcp.connector_server:main"
+oge-hse-seed = "oge_hse_mcp.seed_data:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

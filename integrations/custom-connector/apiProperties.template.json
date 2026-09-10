@@ -1,0 +1,58 @@
+{
+  "properties": {
+    "connectionParameters": {
+      "token": {
+        "type": "oauthSetting",
+        "oAuthSettings": {
+          "identityProvider": "aad",
+          "clientId": "__HSE_OBO_CONNECTOR_CLIENT_ID__",
+          "clientAssertionType": "genericFederatedIdentityCredential",
+          "scopes": [
+            "__HSE_FULL_SCOPE__"
+          ],
+          "redirectMode": "Global",
+          "redirectUrl": "https://global.consent.azure-apim.net/redirect",
+          "properties": {
+            "IsFirstParty": "False",
+            "AzureActiveDirectoryResourceId": "__HSE_RESOURCE_ID__",
+            "IsOnbehalfofLoginSupported": true
+          },
+          "customParameters": {
+            "loginUri": {
+              "value": "https://login.windows.net"
+            },
+            "tenantId": {
+              "value": "__HSE_TENANT_ID__"
+            },
+            "resourceUri": {
+              "value": "__HSE_RESOURCE_ID__"
+            },
+            "enableOnbehalfOfLogin": {
+              "value": "true"
+            },
+            "grantType": {
+              "value": "authorization_code_with_federated_identity_credentials"
+            }
+          }
+        }
+      },
+      "token:TenantId": {
+        "type": "string",
+        "metadata": {
+          "sourceType": "AzureActiveDirectoryTenant"
+        },
+        "uiDefinition": {
+          "constraints": {
+            "required": "false",
+            "hidden": "true"
+          }
+        }
+      }
+    },
+    "iconBrandColor": "#00685e",
+    "capabilities": [],
+    "scriptOperations": null,
+    "publisher": "__HSE_CONNECTOR_PUBLISHER__",
+    "stackOwner": "__HSE_CONNECTOR_PUBLISHER__"
+  }
+}

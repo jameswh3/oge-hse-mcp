@@ -1,0 +1,34 @@
+{
+  "nameEnvironmentVariable": "HSE_FEDERATED_CONNECTOR_NAME",
+  "publisherEnvironmentVariable": "HSE_FEDERATED_CONNECTOR_PUBLISHER",
+  "serverUrlEnvironmentVariable": "HSE_ENTRA_RESOURCE_URL",
+  "authentication": {
+    "type": "OAuth2",
+    "scopeTemplate": "api://<HSE_ENTRA_AUDIENCE>/hse.read"
+  },
+  "transport": "mcp-streamable-1.0",
+  "readOnly": true,
+  "tools": [
+    {
+      "name": "search_hse_knowledge",
+      "purpose": "Search procedures and incident lessons for Microsoft 365 grounding."
+    },
+    {
+      "name": "search_procedures",
+      "purpose": "Search current global and site-authorized procedures."
+    },
+    {
+      "name": "get_procedure",
+      "purpose": "Retrieve one current authorized procedure."
+    },
+    {
+      "name": "search_incidents",
+      "purpose": "Search fictitious incident lessons in authorized sites."
+    }
+  ],
+  "prohibitedTools": [
+    "initialize_database",
+    "upsert_procedure",
+    "record_incident"
+  ]
+}

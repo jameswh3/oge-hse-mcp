@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.venv/
+__pycache__/
+*.egg-info/
+*.db
+*.har
+*.log
+build/
+dist/
+.azure/
+*.parameters.local.json
+integrations/custom-connector/*.generated.yaml
+integrations/custom-connector/*.generated.json

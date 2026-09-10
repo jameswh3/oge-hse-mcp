@@ -1,0 +1,38 @@
+swagger: '2.0'
+info:
+  title: HSE Knowledge MCP
+  description: Read-only access to HSE procedures and incident lessons using the signed-in user's permissions.
+  version: 1.0.0
+host: __HSE_MCP_HOST__
+basePath: /
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2-auth:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: __HSE_AUTHORIZATION_URL__
+    tokenUrl: __HSE_TOKEN_URL__
+    scopes:
+      __HSE_FULL_SCOPE__: Read HSE knowledge as the signed-in user
+security:
+  - oauth2-auth:
+      - __HSE_FULL_SCOPE__
+paths:
+  /mcp:
+    post:
+      summary: Invoke the HSE Knowledge MCP server
+      description: Invokes read-only HSE retrieval tools through MCP Streamable HTTP.
+      operationId: InvokeHseMcp
+      x-ms-agentic-protocol: mcp-streamable-1.0
+      responses:
+        '200':
+          description: MCP response
+        '401':
+          description: Authentication is required
+        '403':
+          description: The signed-in user lacks the required scope or site permission
