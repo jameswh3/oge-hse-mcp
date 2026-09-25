@@ -23,7 +23,7 @@
     },
     {
       "name": "search_incidents",
-      "purpose": "Search fictitious incident lessons in authorized sites."
+      "purpose": "Search fictitious incidents in authorized sites and report the complete matching count."
     }
   ],
   "prohibitedTools": [

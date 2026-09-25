@@ -26,9 +26,9 @@ Remove all demonstration Azure resources and the Entra app registration with `.\
 - `search_hse_knowledge`: Search procedures and incident lessons with grounding metadata.
 - `search_procedures`: Search global and site-authorized HSE procedures.
 - `get_procedure`: Retrieve one authorized procedure.
-- `search_incidents`: Search fictitious incidents for authorized sites.
+- `search_incidents`: Search 200 fictitious incidents across the two authorized demo sites and report the full matching count independently of the result limit.
 
-Authorization is fail-closed. The HTTP bearer token is validated for signature, issuer, audience, expiry, and required delegated scope. Site access comes from the configured claim named by `HSE_ENTRA_SITE_CLAIM`; a tool argument can't expand that scope.
+Authorization is fail-closed. The HTTP bearer token is validated for signature, issuer, audience, expiry, and required delegated scope. Site access comes from Entra app roles in the configured claim named by `HSE_ENTRA_SITE_CLAIM`; a tool argument can't expand that scope.
 
 ## Microsoft 365 integration paths
 

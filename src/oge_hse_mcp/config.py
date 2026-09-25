@@ -56,6 +56,6 @@ def get_settings() -> Settings:
         additional_audiences=sorted(set(os.getenv("HSE_ENTRA_ADDITIONAL_AUDIENCES", "").split())),
         issuer=os.getenv("HSE_ENTRA_ISSUER"),
         resource_url=os.getenv("HSE_ENTRA_RESOURCE_URL"),
-        site_claim=os.getenv("HSE_ENTRA_SITE_CLAIM", "site_ids"),
+        site_claim=os.getenv("HSE_ENTRA_SITE_CLAIM", "roles"),
         read_scopes=sorted(set(os.getenv("HSE_ENTRA_READ_SCOPES", "hse.read").split())),
     )

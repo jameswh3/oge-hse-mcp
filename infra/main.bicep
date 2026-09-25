@@ -6,6 +6,9 @@ param location string = resourceGroup().location
 @description('Short environment label used in resource names.')
 param environmentName string
 
+@description('Optional resource tags supplied by the deployment environment.')
+param resourceTags object = {}
+
 @description('Existing Container Apps managed environment name.')
 param managedEnvironmentName string
 
@@ -25,7 +28,7 @@ param entraAudience string
 param entraAdditionalAudiences string = ''
 
 @description('Claim containing authorized HSE site identifiers.')
-param entraSiteClaim string = 'site_ids'
+param entraSiteClaim string = 'roles'
 
 @description('Delegated scopes required by the HSE API.')
 param entraReadScopes string = 'hse.read'
@@ -48,6 +51,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' existing =
 resource pullIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: 'id-hse-${environmentName}-${suffix}'
   location: location
+  tags: resourceTags
 }
 
 resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -63,6 +67,7 @@ resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 resource app 'Microsoft.App/containerApps@2025-01-01' = {
   name: appName
   location: location
+  tags: resourceTags
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {

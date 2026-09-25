@@ -6,6 +6,9 @@ param location string = resourceGroup().location
 @description('Short environment label used in resource names.')
 param environmentName string
 
+@description('Optional resource tags supplied by the deployment environment.')
+param resourceTags object = {}
+
 var suffix = substring(uniqueString(resourceGroup().id, environmentName), 0, 8)
 var logAnalyticsName = 'log-hse-${environmentName}-${suffix}'
 var managedEnvironmentName = 'cae-hse-${environmentName}-${suffix}'
@@ -14,6 +17,7 @@ var registryName = toLower('acrhse${environmentName}${suffix}')
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: logAnalyticsName
   location: location
+  tags: resourceTags
   properties: {
     retentionInDays: 30
     features: {
@@ -28,6 +32,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
   name: managedEnvironmentName
   location: location
+  tags: resourceTags
   properties: {
     appLogsConfiguration: {
       destination: 'log-analytics'
@@ -42,6 +47,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
 resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: registryName
   location: location
+  tags: resourceTags
   sku: {
     name: 'Basic'
   }

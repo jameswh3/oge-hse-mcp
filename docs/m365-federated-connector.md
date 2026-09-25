@@ -12,7 +12,7 @@ flowchart LR
 
 ## Runtime implementation
 
-The deployed `oge_hse_mcp.connector_server` is the federated runtime. It exposes only `search_hse_knowledge`, `search_procedures`, `get_procedure`, and `search_incidents`. It validates delegated Entra tokens and derives site access from `HSE_ENTRA_SITE_CLAIM`. `search_hse_knowledge` returns title, content, record type, revision, and a canonical URL rooted at `HSE_SOURCE_ITEM_BASE_URL` for grounding and citations.
+The deployed `oge_hse_mcp.connector_server` is the federated runtime. It exposes only `search_hse_knowledge`, `search_procedures`, `get_procedure`, and `search_incidents`. It validates delegated Entra tokens and derives site access from Entra app roles in `HSE_ENTRA_SITE_CLAIM`. `search_hse_knowledge` returns title, content, record type, revision, and a canonical URL rooted at `HSE_SOURCE_ITEM_BASE_URL` for grounding and citations.
 
 The static expected contract is in `integrations/federated-connector/tool-contract.json`. Run `scripts/validate-federated-connector.ps1` to verify OAuth protected-resource metadata and anonymous denial against `HSE_ENTRA_RESOURCE_URL`.
 

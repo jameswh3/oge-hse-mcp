@@ -20,9 +20,9 @@ All paths use the HSE resource app's delegated authorization contract, but clien
 1. Expose delegated scope `hse.read` on the Entra resource app whose client ID is `HSE_ENTRA_AUDIENCE`.
 2. Configure the custom or federated connector to request `api://<HSE_ENTRA_AUDIENCE>/hse.read`.
 3. The user signs in or consents. The client obtains an access token for the HSE API and sends it as `Authorization: Bearer` to the `/mcp` endpoint.
-4. The server validates issuer from `HSE_ENTRA_ISSUER`, audience from `HSE_ENTRA_AUDIENCE`, required scope from `HSE_ENTRA_READ_SCOPES`, and authorization attributes from `HSE_ENTRA_SITE_CLAIM`.
+4. The server validates issuer from `HSE_ENTRA_ISSUER`, audience from `HSE_ENTRA_AUDIENCE`, required scope from `HSE_ENTRA_READ_SCOPES`, and site authorization from Entra app roles in `HSE_ENTRA_SITE_CLAIM`.
 
-Do not pass an access token as an MCP tool parameter. Do not use an app-only identity when HMS requires per-user authorization. The demo expects the site claim to be emitted in the access token; in production, use Entra app roles/groups or query the HMS entitlement store by the validated `oid` when token group overage or frequently changing permissions make custom claims unsuitable.
+Do not pass an access token as an MCP tool parameter. Do not use an app-only identity when HMS requires per-user authorization. The demo uses user-assigned Entra app roles as site identifiers in the access token. In production, query the HMS entitlement store by the validated `oid` when group overage or frequently changing permissions make token claims unsuitable.
 
 ## Tenant controls and roles
 
@@ -36,7 +36,7 @@ Do not pass an access token as an MCP tool parameter. Do not use an app-only ide
 ## Recommended Dev POC
 
 1. Deploy this server in a nonproduction Azure subscription with fictitious data and `HSE_REQUIRE_AUTH=true`.
-2. Add one pilot user's `site_ids` claim and grant/admin-consent only `hse.read`.
+2. Assign the pilot user only the required site app roles and grant/admin-consent only `hse.read`.
 3. Implement the Copilot Studio path from its runbook and validate the pilot user's OBO token and site boundaries.
 4. In parallel, validate the federated endpoint contract. Create the tenant-local connector and enable it only for the pilot group.
 5. Compare explicit HSE agent use with direct HSE source grounding. Test allowed and denied sites, token expiry, missing claims, citations, audit logs, and prompt-injection handling.

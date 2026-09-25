@@ -4,7 +4,7 @@ import os
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 
 from oge_hse_mcp.config import get_settings
 from oge_hse_mcp.db import session_scope
@@ -102,16 +102,27 @@ def search_incidents(
 
     allowed_sites = _normalize_sites(site_ids)
     if not allowed_sites:
-        return {"incidents": []}
+        return {"incidents": [], "returned_count": 0, "total_count": 0}
     with session_scope() as session:
-        statement = select(Incident).where(Incident.site_id.in_(allowed_sites)).order_by(Incident.occurred_at.desc())
+        conditions = [Incident.site_id.in_(allowed_sites)]
         if query:
             pattern = f"%{query.strip()}%"
-            statement = statement.where(or_(Incident.title.ilike(pattern), Incident.description.ilike(pattern)))
+            conditions.append(or_(Incident.title.ilike(pattern), Incident.description.ilike(pattern)))
         if severity:
-            statement = statement.where(Incident.severity == severity.strip().lower())
-        statement = statement.limit(effective_limit)
-        return {"incidents": [_incident_dict(item) for item in session.scalars(statement).all()]}
+            conditions.append(Incident.severity == severity.strip().lower())
+        total_count = session.scalar(select(func.count()).select_from(Incident).where(*conditions)) or 0
+        statement = (
+            select(Incident)
+            .where(*conditions)
+            .order_by(Incident.occurred_at.desc())
+            .limit(effective_limit)
+        )
+        incidents = [_incident_dict(item) for item in session.scalars(statement).all()]
+        return {
+            "incidents": incidents,
+            "returned_count": len(incidents),
+            "total_count": total_count,
+        }
 
 
 @mcp.tool()

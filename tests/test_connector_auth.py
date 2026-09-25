@@ -1,3 +1,5 @@
+import asyncio
+import json
 from dataclasses import dataclass
 
 from oge_hse_mcp import auth, connector_server
@@ -39,14 +41,16 @@ def test_verifier_accepts_primary_and_teams_sso_audiences(monkeypatch):
 
 def test_claim_sites_are_used_when_request_omits_sites(monkeypatch):
     monkeypatch.setenv("HSE_REQUIRE_AUTH", "true")
-    monkeypatch.setattr(connector_server, "get_access_token", lambda: _Token({"site_ids": ["DEMO-GULF"]}))
+    monkeypatch.setenv("HSE_ENTRA_SITE_CLAIM", "roles")
+    monkeypatch.setattr(connector_server, "get_access_token", lambda: _Token({"roles": ["DEMO-GULF"]}))
 
     assert connector_server._authorized_sites() == ["DEMO-GULF"]
 
 
 def test_requested_site_must_be_in_delegated_claim(monkeypatch):
     monkeypatch.setenv("HSE_REQUIRE_AUTH", "true")
-    monkeypatch.setattr(connector_server, "get_access_token", lambda: _Token({"site_ids": ["DEMO-GULF"]}))
+    monkeypatch.setenv("HSE_ENTRA_SITE_CLAIM", "roles")
+    monkeypatch.setattr(connector_server, "get_access_token", lambda: _Token({"roles": ["DEMO-GULF"]}))
 
     try:
         connector_server._authorized_sites(["DEMO-PERMIAN"])
@@ -64,3 +68,30 @@ def test_empty_site_claim_does_not_grant_requested_site(monkeypatch):
         assert False, "Expected missing site authorization to be rejected"
     except ValueError as exc:
         assert "not authorized" in str(exc)
+
+
+def test_tool_input_schemas_use_copilot_compatible_single_types():
+    tools = asyncio.run(connector_server.mcp.list_tools())
+
+    assert {tool.name for tool in tools} == {
+        "get_procedure",
+        "search_hse_knowledge",
+        "search_incidents",
+        "search_procedures",
+    }
+    for tool in tools:
+        assert "anyOf" not in json.dumps(tool.inputSchema)
+        assert "site_ids" not in tool.inputSchema["properties"]
+        assert tool.outputSchema is None
+        assert tool.annotations is not None
+        assert tool.annotations.readOnlyHint is True
+        assert tool.annotations.destructiveHint is False
+
+
+def test_transport_security_allows_configured_public_host():
+    security = connector_server._transport_security("https://hse.example.test/mcp")
+
+    assert security.enable_dns_rebinding_protection
+    assert "hse.example.test" in security.allowed_hosts
+    assert "hse.example.test:*" in security.allowed_hosts
+    assert "attacker.example.test" not in security.allowed_hosts

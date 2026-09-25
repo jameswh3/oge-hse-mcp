@@ -30,8 +30,10 @@ flowchart LR
 
 ## Identity contract
 
-The connector app is a client, not the HSE resource API. The resulting access token must have the HSE app as audience, `hse.read` in `scp`, the user in `oid`, and the authorized sites in the claim named by `HSE_ENTRA_SITE_CLAIM`. The server rejects a requested site outside that claim.
+The connector app is a client, not the HSE resource API. The resulting access token must have the HSE app as audience, `hse.read` in `scp`, the user in `oid`, and the authorized sites as Entra app roles in the claim named by `HSE_ENTRA_SITE_CLAIM`. Connector-facing tools derive site scope exclusively from that claim.
 
 Test `initialize`, `tools/list`, and `tools/call` from the custom connector test tab. The operation is `InvokeHseMcp`; the JSON-RPC method remains an MCP method.
+
+If Copilot reports that connector discovery failed, inspect the `tools/list` response before troubleshooting retrieval. Copilot Studio doesn't support tool input schemas whose `type` is an array of multiple types. The connector-facing functions intentionally use empty-string and zero defaults so optional inputs remain single-type JSON Schema properties. Redeploy the MCP server, delete stale connector connections, create a new connection, and re-add the MCP tool to the agent after changing a published tool schema.
 
 Microsoft reference: [Configure OBO authentication for custom connectors](https://learn.microsoft.com/microsoft-copilot-studio/advanced-custom-connector-on-behalf-of).
